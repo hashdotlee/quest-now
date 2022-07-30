@@ -7,9 +7,9 @@ export default function Logout() {
     if (isLoggedIn()) {
       removeToken();
       removeUser();
-      router.push("/quest-now/login");
+      router.push("/login");
     } else {
-      router.push("/quest-now/login");
+      router.push("/login");
     }
   }, [router]);
   return null;
