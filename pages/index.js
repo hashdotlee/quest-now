@@ -1,18 +1,13 @@
 import Head from "next/head";
+import Link from "next/link";
+import PostQuest from "../components/PostQuest";
+import QuestList from "../components/QuestList";
+import useQuestions from "../hooks/useQuestions";
+import { getUser, isLoggedIn } from "../utils/authUtils";
 
-export async function getStaticProps() {
-  const { data: questions } = await fetch(`${process.env.API_URL}/questions`).then(
-    (res) => res.json()
-  );
-
-  return {
-    props: {
-      questions: questions,
-    },
-  };
-}
-
-export default function Home({ questions = [] }) {
+export default function Home() {
+  const user = getUser();
+  const { questions } = useQuestions();
   return (
     <div>
       <Head>
@@ -24,19 +19,28 @@ export default function Home({ questions = [] }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <h1>Welcome to Quest Now!</h1>
-        <div>
-          {questions.map((question) => (
-            <div key={question.id}>
-              <h2>{question.title}</h2>
-              <p>{question.content}</p>
-              <p>{question.user_id}</p>
-              <p>{question.vote}</p>
-              <p>{question.answers}</p>
-            </div>
-          ))}
-        </div>
+      <main className="container mx-auto px-4">
+        <h1 className="text-3xl">Welcome to Quest Now!</h1>
+        {isLoggedIn() ? (
+          <p>
+            Hello,{" "}
+            <Link href="/profile">
+              <a className="font-semibold text-orange-500 cursor-pointer">
+                {user ? user.username : "anonymous"}
+              </a>
+            </Link>
+          </p>
+        ) : (
+          <p>
+            You are not logged in!{" "}
+            <span>
+              <Link href="/login">
+                <a>Login</a>
+              </Link>
+            </span>
+          </p>
+        )}
+        <QuestList questions={questions} />
       </main>
 
       <footer></footer>

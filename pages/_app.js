@@ -1,7 +1,18 @@
-import '../styles/globals.css'
+import { SWRConfig } from "swr";
+import "../styles/globals.css";
+import {fetchWrapper} from "../utils/fetchWrapper";
 
 function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+  return (
+    <SWRConfig
+      value={{
+        fetcher: (resource, init) =>
+          fetchWrapper(resource, init),
+      }}
+    >
+      <Component {...pageProps} />
+    </SWRConfig>
+  );
 }
 
-export default MyApp
+export default MyApp;
