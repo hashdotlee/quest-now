@@ -1,8 +1,8 @@
 import Head from "next/head";
 
-export function getStaticProps() {
-  const questions = fetch(`${process.env.API_URL}/questions`).then((res) =>
-    res.json()
+export async function getStaticProps() {
+  const { data: questions } = await fetch(`${process.env.API_URL}/questions`).then(
+    (res) => res.json()
   );
 
   return {
