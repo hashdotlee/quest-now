@@ -24,8 +24,5 @@ export const fetchWrapper = (url, options) => {
       }
       throw new Error(response.statusText);
     })
-    .then((response) => response.json())
-    .catch((error) => {
-      console.log(error);
-    });
+    .then((response) => response.json());
 };

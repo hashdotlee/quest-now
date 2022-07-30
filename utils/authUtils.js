@@ -39,3 +39,11 @@ export const setUser = (user) => {
   }
   return null;
 };
+
+export const removeUser = () => {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("user");
+    return;
+  }
+  return null;
+};

@@ -3,18 +3,20 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import loginService from "../services/login.service";
+import registerService from "../services/register.service";
 
-export default function Login() {
+export default function Register() {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const onSubmit = (e) => {
     e.preventDefault();
-    loginService(email, password)
+    registerService(email, password, username)
       .then(() => {
-        router.push("/");
+        alert("Registered successfully!");
+        router.push("/login");
       })
       .catch((err) => {
         alert(err.message);
@@ -23,18 +25,30 @@ export default function Login() {
   return (
     <div className="container px-4 mx-auto">
       <Head>
-        <title>Login</title>
-        <meta name="description" content="Login to Quest Now" />
+        <title>Register</title>
+        <meta name="description" content="Register to Quest Now" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <h1>Register</h1>
       <p className="flex gap-2 items-center h-10">
         <ArrowLeftIcon className="w-4 h-4" />
         <Link href="/">
-          <a>Return to Home</a>
+          <a>Return to Login</a>
         </Link>{" "}
       </p>
-      <h1>Login</h1>
       <form onSubmit={onSubmit}>
+        <div>
+          <label className="block" htmlFor="password">
+            Username
+          </label>
+          <input
+            type="text"
+            onChange={(e) => setUsername(e.target.value)}
+            id="username"
+            name="username"
+            className="border p-1"
+          />
+        </div>
         <div>
           <label className="block" htmlFor="email">
             Email
@@ -60,8 +74,7 @@ export default function Login() {
           />
         </div>
         <button type="submit" className="bg-orange-500 mt-3 font-semibold p-1">
-          Login
-          <ArrowRightIcon className="h-4 w-4 ml-2 inline-block" />
+          Register
         </button>
       </form>
     </div>
