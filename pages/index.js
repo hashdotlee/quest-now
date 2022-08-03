@@ -1,8 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import QuestList from "../components/QuestList";
-import {getUser, isLoggedIn} from "../utils/authUtils";
+import { getUser, isLoggedIn } from "../utils/authUtils";
 
 export default function Home() {
   const user = getUser();
@@ -24,6 +24,21 @@ export default function Home() {
           content="Quest Now is a platform for people to share their quest for the world."
         />
         <link rel="icon" href="/favicon.ico" />
+        <meta property="og:title" content="Quest Now" />
+        <meta
+          property="og:description"
+          content="Quest Now is a platform for people to share their quest for the world."
+        />
+        <meta property="og:url" content="https://questnow.herokuapp.com/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Quest Now" />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:locale:alternate" content="vi_VN" />
+        <link
+          rel="canonical"
+          href="https://quest.hashdotlee.cyou/"
+          key="canonical"
+        />
       </Head>
 
       <main className="container mx-auto px-4 min-h-screen">
