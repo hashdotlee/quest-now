@@ -1,23 +1,24 @@
 import {
-	ArrowLeftIcon,
-	ArrowSmDownIcon,
-	ArrowSmUpIcon,
-	ClockIcon
+  ArrowLeftIcon,
+  ArrowSmDownIcon,
+  ArrowSmUpIcon,
+  ClockIcon,
 } from "@heroicons/react/solid";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import {useRouter} from "next/router";
-import {useEffect, useState} from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import ActionList from "../../../components/ActionList";
 import ItemAnswer from "../../../components/ItemAnswer";
 import useAnswerByQuestion from "../../../hooks/useAnswerByQuestion";
 import useGetQuestionVotes from "../../../hooks/useGetQuestionVotes";
 import useQuestion from "../../../hooks/useQuestion";
+import deleteVoteQuestion from "../../../services/deleteVoteQuestion.service";
 import downvoteQuestionService from "../../../services/downvoteQuestion.service";
 import postAnswer from "../../../services/postAnswer.service";
 import upvoteQuestionService from "../../../services/upvoteQuestion.service";
-import {getUser} from "../../../utils/authUtils";
+import { getUser } from "../../../utils/authUtils";
 import getDayFromNow from "../../../utils/getDateFromNow";
 
 export default function QuestionDetail() {
@@ -37,6 +38,16 @@ export default function QuestionDetail() {
   }, []);
   const handleUpvote = async () => {
     try {
+      if (!userInfo) {
+        alert("You must login to downvote");
+        return;
+      } else if (
+        votes?.filter((item) => item.user_id === userInfo.id && item.type === 1)
+          .length > 0
+      ) {
+        await deleteVoteQuestion(id);
+        return;
+      }
       await upvoteQuestionService(id);
       alert("Upvote success");
     } catch (error) {
@@ -47,6 +58,17 @@ export default function QuestionDetail() {
 
   const handleDownvote = async () => {
     try {
+      if (!userInfo) {
+        alert("You must login to downvote");
+        return;
+      } else if (
+        votes?.filter((item) => item.user_id === userInfo.id && item.type === 2)
+          .length > 0
+      ) {
+        await deleteVoteQuestion(id);
+        return;
+      }
+
       await downvoteQuestionService(id);
       alert("Downvote success");
     } catch (error) {

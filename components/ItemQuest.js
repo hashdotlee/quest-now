@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import upvoteQuestionService from "../services/upvoteQuestion.service";
 import downvoteQuestionService from "../services/downvoteQuestion.service";
 import { getUser } from "../utils/authUtils";
+import deleteVoteQuestion from "../services/deleteVoteQuestion.service";
 
 export default function ItemQuest({ question, index }) {
   const [userInfo, setUserInfo] = useState(null);
@@ -16,6 +17,16 @@ export default function ItemQuest({ question, index }) {
   }, []);
   const handleUpvote = async () => {
     try {
+      if (!userInfo) {
+        alert("You must login to downvote");
+        return;
+      } else if (
+        question?.vote?.filter((item) => item.user_id === userInfo.id && item.type === 1)
+          .length > 0
+      ) {
+        await deleteVoteQuestion(question?.ID);
+        return;
+      }
       await upvoteQuestionService(question?.ID);
       alert("Upvote success");
     } catch (error) {
@@ -26,6 +37,16 @@ export default function ItemQuest({ question, index }) {
 
   const handleDownvote = async () => {
     try {
+      if (!userInfo) {
+        alert("You must login to downvote");
+        return;
+      } else if (
+        question?.vote?.filter((item) => item.user_id === userInfo.id && item.type === 2)
+          .length > 0
+      ) {
+        await deleteVoteQuestion(question?.ID);
+        return;
+      }
       await downvoteQuestionService(question?.ID);
       alert("Downvote success");
     } catch (error) {

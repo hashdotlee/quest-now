@@ -1,6 +1,7 @@
 import { ArrowSmDownIcon, ArrowSmUpIcon } from "@heroicons/react/solid";
 import { useEffect, useState } from "react";
 import useGetAnswerVotes from "../hooks/useGetAnswerVotes";
+import deleteVoteAnswer from "../services/deleteVoteAnswer.service";
 import downvoteAnswerService from "../services/downvoteAnswer.service";
 import upvoteAnswerService from "../services/upvoteAnswer.service";
 import { getUser } from "../utils/authUtils";
@@ -8,10 +9,27 @@ import getDayFromNow from "../utils/getDateFromNow";
 import ActionList from "./ActionList";
 
 export default function ItemAnswer({ answer }) {
+  const [userInfo, setUserInfo] = useState(null);
+  useEffect(() => {
+    let currentUser = getUser();
+    if (currentUser) {
+      setUserInfo(currentUser);
+    }
+  }, []);
   const { votes = [] } = useGetAnswerVotes(answer.ID);
 
   const handleUpvote = async () => {
     try {
+      if (!userInfo) {
+        alert("You must login to downvote");
+        return;
+      } else if (
+        votes?.filter((item) => item.user_id === userInfo.id && item.type === 1)
+          .length > 0
+      ) {
+        await deleteVoteAnswer(answer.ID);
+        return;
+      }
       await upvoteAnswerService(answer.ID);
       alert("Upvote success");
     } catch (error) {
@@ -22,6 +40,16 @@ export default function ItemAnswer({ answer }) {
 
   const handleDownvote = async () => {
     try {
+      if (!userInfo) {
+        alert("You must login to downvote");
+        return;
+      } else if (
+        votes?.filter((item) => item.user_id === userInfo.id && item.type === 2)
+          .length > 0
+      ) {
+        await deleteVoteAnswer(answer.ID);
+        return;
+      }
       await downvoteAnswerService(answer.ID);
       alert("Downvote success");
     } catch (error) {
@@ -29,13 +57,6 @@ export default function ItemAnswer({ answer }) {
       alert("Downvote failed");
     }
   };
-  const [userInfo, setUserInfo] = useState(null);
-  useEffect(() => {
-    let currentUser = getUser();
-    if (currentUser) {
-      setUserInfo(currentUser);
-    }
-  }, []);
   return (
     <div className="flex gap-3 py-2">
       <div>
