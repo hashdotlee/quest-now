@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import ActionList from "../../../components/ActionList";
 import ItemAnswer from "../../../components/ItemAnswer";
 import useAnswerByQuestion from "../../../hooks/useAnswerByQuestion";
 import useQuestion from "../../../hooks/useQuestion";
@@ -110,6 +111,15 @@ export default function QuestionDetail() {
                       ))}
                     </div>
                   )}
+                  <div>
+                    <ActionList
+                      edit
+                      _delete
+                      share
+                      id={question?.ID}
+                      object="question"
+                    />
+                  </div>
                 </div>
               </div>
               <hr />
@@ -154,9 +164,7 @@ export default function QuestionDetail() {
             </div>
             <div className="bg-orange-100 text-neutral-500 h-[80vh] text-center rounded flex items-center justify-center gap-3 flex-col w-1/4">
               <ClockIcon className="w-8 h-8 mx-auto" />
-              <p className="text-base">
-                This section is under construction
-              </p>
+              <p className="text-base">This section is under construction</p>
             </div>
           </div>
         </div>

@@ -1,8 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import QuestList from "../components/QuestList";
-import { getUser, isLoggedIn } from "../utils/authUtils";
+import {getUser, isLoggedIn} from "../utils/authUtils";
 
 export default function Home() {
   const user = getUser();

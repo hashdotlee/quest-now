@@ -25,7 +25,7 @@ export default function ItemAnswer({ answer }) {
         <div> {answer?.content} </div>
         <div className="flex gap-3">
           <div>
-            <ActionList edit _delete share />
+            <ActionList object="answer" id={answer?.ID} edit _delete share />
           </div>
           <div className="ml-auto text-xs flex gap-2">
             <span className="text-neutral-500">Answer:</span>
