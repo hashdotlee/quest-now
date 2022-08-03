@@ -2,13 +2,11 @@ import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import QuestList from "../components/QuestList";
-import useQuestions from "../hooks/useQuestions";
 import { getUser, isLoggedIn } from "../utils/authUtils";
 
 export default function Home() {
   const user = getUser();
   const [isLogged, setIsLogged] = useState(false);
-  const { questions } = useQuestions();
   useEffect(() => {
     if (!isLoggedIn()) {
       setIsLogged(false);
@@ -28,7 +26,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="container mx-auto px-4">
+      <main className="container mx-auto px-4 min-h-screen">
         <h1 className="text-3xl">Welcome to Quest Now!</h1>
         {isLogged ? (
           <p>
@@ -40,9 +38,7 @@ export default function Home() {
             </Link>{" "}
             (<span className="text-sm">May be you want to </span>
             <Link href="/logout">
-              <a className="text-sm text-neutral-500 cursor-pointer">
-                Logout
-              </a>
+              <a className="text-sm text-neutral-500 cursor-pointer">Logout</a>
             </Link>
             )
           </p>
@@ -62,10 +58,12 @@ export default function Home() {
             </span>
           </p>
         )}
-        <QuestList questions={questions} />
+        <QuestList />
       </main>
 
-      <footer></footer>
+      <footer className="container mt-5">
+        Copyright © 2020 Quest Now. All rights reserved.
+      </footer>
     </div>
   );
 }

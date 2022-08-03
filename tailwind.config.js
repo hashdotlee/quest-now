@@ -11,6 +11,9 @@ module.exports = {
       screens: {
         sm: "1280px",
       },
+      padding: {
+        DEFAULT: "1rem",
+      },
     },
   },
   plugins: [],

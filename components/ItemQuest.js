@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowSmUpIcon, ArrowSmDownIcon } from "@heroicons/react/solid";
+import slug from "slug";
 
 export default function ItemQuest({ question, index }) {
   return (
@@ -13,7 +14,7 @@ export default function ItemQuest({ question, index }) {
           <ArrowSmDownIcon className="h-4 w-4" />
         </div>
         <div>
-          <Link href={`/questions/${question.ID}`}>
+          <Link href={`/questions/${question.ID}/${slug(question.title)}`}>
             <a>{question.title}</a>
           </Link>
           <div className="flex items-center text-xs gap-2">

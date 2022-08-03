@@ -29,13 +29,13 @@ export default function Register() {
         <meta name="description" content="Register to Quest Now" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h1>Register</h1>
       <p className="flex gap-2 items-center h-10">
         <ArrowLeftIcon className="w-4 h-4" />
         <Link href="/">
           <a>Return to Login</a>
         </Link>{" "}
       </p>
+      <h1>Register</h1>
       <form onSubmit={onSubmit}>
         <div>
           <label className="block" htmlFor="password">

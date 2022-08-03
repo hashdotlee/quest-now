@@ -1,10 +1,11 @@
 import { ArrowRightIcon } from "@heroicons/react/solid";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import ItemQuest from "./ItemQuest";
+import useQuestions from "../hooks/useQuestions";
 
-export default function QuestList({ questions = [] }) {
+export default function QuestList() {
   const router = useRouter();
+  const { questions, isLoading, isError } = useQuestions();
   return (
     <div>
       <div className="flex items-center gap-8 mt-4">
@@ -34,11 +35,20 @@ export default function QuestList({ questions = [] }) {
           <button className="text-neutral-500">&#12300;Unsolved&#12301;</button>
         </div>
       </div>
-      <ul className="mt-3">
-        {questions.map((question, index) => (
-          <ItemQuest key={question.ID} index={index} question={question} />
-        ))}
-      </ul>
+      {isLoading ? (
+        <div className="text-neutral-600">Loading question list...</div>
+      ) : isError ? (
+        <details className="text-neutral-600">
+          <summary>Error loading question list.</summary>
+          <p>{String(isError)}</p>
+        </details>
+      ) : (
+        <ul className="mt-3">
+          {questions.map((question, index) => (
+            <ItemQuest key={question.ID} index={index} question={question} />
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
