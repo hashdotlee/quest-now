@@ -1,19 +1,23 @@
 import {
-  ArrowLeftIcon,
-  ArrowSmDownIcon,
-  ArrowSmUpIcon,
-  ClockIcon,
+	ArrowLeftIcon,
+	ArrowSmDownIcon,
+	ArrowSmUpIcon,
+	ClockIcon
 } from "@heroicons/react/solid";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useState } from "react";
+import {useRouter} from "next/router";
+import {useEffect, useState} from "react";
 import ActionList from "../../../components/ActionList";
 import ItemAnswer from "../../../components/ItemAnswer";
 import useAnswerByQuestion from "../../../hooks/useAnswerByQuestion";
+import useGetQuestionVotes from "../../../hooks/useGetQuestionVotes";
 import useQuestion from "../../../hooks/useQuestion";
+import downvoteQuestionService from "../../../services/downvoteQuestion.service";
 import postAnswer from "../../../services/postAnswer.service";
+import upvoteQuestionService from "../../../services/upvoteQuestion.service";
+import {getUser} from "../../../utils/authUtils";
 import getDayFromNow from "../../../utils/getDateFromNow";
 
 export default function QuestionDetail() {
@@ -21,8 +25,36 @@ export default function QuestionDetail() {
   const query = router.query;
   const { id } = query;
   const { question, user } = useQuestion(id ? String(id) : null);
+  const { votes } = useGetQuestionVotes(id ? String(id) : null);
+  const [userInfo, setUserInfo] = useState(null);
   const { answers } = useAnswerByQuestion(id ? String(id) : null);
   const [content, setContent] = useState("");
+  useEffect(() => {
+    let currentUser = getUser();
+    if (currentUser) {
+      setUserInfo(currentUser);
+    }
+  }, []);
+  const handleUpvote = async () => {
+    try {
+      await upvoteQuestionService(id);
+      alert("Upvote success");
+    } catch (error) {
+      console.log(error);
+      alert("Upvote failed");
+    }
+  };
+
+  const handleDownvote = async () => {
+    try {
+      await downvoteQuestionService(id);
+      alert("Downvote success");
+    } catch (error) {
+      console.log(error);
+      alert("Downvote failed");
+    }
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
     postAnswer(content, question?.ID)
@@ -77,17 +109,39 @@ export default function QuestionDetail() {
             <div className="w-3/4 flex flex-col gap-3">
               <div className="flex gap-3">
                 <div className="flex flex-col items-center">
-                  <button>
-                    <ArrowSmUpIcon className="w-8 h-8 text-neutral-400" />
+                  <button
+                    onClick={handleUpvote}
+                    className={`${
+                      userInfo &&
+                      votes?.filter(
+                        (item) =>
+                          item.user_id === userInfo.id && item.type === 1
+                      ).length > 0
+                        ? "text-orange-400"
+                        : "text-neutral-400"
+                    }`}
+                  >
+                    <ArrowSmUpIcon className="w-8 h-8" />
                   </button>
                   <span className="text-xl text-neutral-400">
-                    {question?.vote
-                      ? question.vote.filter((vote) => vote.type === 1) -
-                        question.vote.filter((vote) => vote.type === 0)
+                    {votes?.length
+                      ? votes.filter((vote) => vote.type === 1).length -
+                        votes.filter((vote) => vote.type === 2).length
                       : 0}
                   </span>
-                  <button>
-                    <ArrowSmDownIcon className="w-8 h-8 text-neutral-400" />
+                  <button
+                    onClick={handleDownvote}
+                    className={`${
+                      userInfo &&
+                      votes?.filter(
+                        (item) =>
+                          item.user_id === userInfo.id && item.type === 2
+                      ).length > 0
+                        ? "text-orange-400"
+                        : "text-neutral-400"
+                    }`}
+                  >
+                    <ArrowSmDownIcon className="w-8 h-8" />
                   </button>
                 </div>
                 <div className="flex flex-col gap-3">
