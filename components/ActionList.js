@@ -1,4 +1,6 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
+import { FacebookShareButton } from "react-share";
 import { useSWRConfig } from "swr";
 import deleteAnswerService from "../services/deleteAnswer.service";
 import deleteQuestionService from "../services/deleteQuestion.service";
@@ -15,6 +17,7 @@ export default function ActionList({
   object, // string
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
   const onSubmit = (content) => {
     if (object === "answer") {
       updateAnswerService(id, content)
@@ -96,7 +99,16 @@ export default function ActionList({
         {verify && <button onClick={() => handleVerify()}>Verify</button>}
         {edit && <button onClick={() => handleEdit()}>Edit</button>}
         {_delete && <button onClick={() => handleDelete()}>Delete</button>}
-        {share && <button onClick={() => handleShare()}>Share</button>}
+        {share && (
+          <FacebookShareButton
+            url={router.asPath}
+            quote={"Check out this question!"}
+            hashtag="#QuestNow"
+          >
+            {" "}
+            Share on Facebook
+          </FacebookShareButton>
+        )}
       </div>
       <MyModal
         isOpen={isOpen}

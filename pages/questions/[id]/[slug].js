@@ -6,6 +6,7 @@ import {
 } from "@heroicons/react/solid";
 import Head from "next/head";
 import Image from "next/image";
+import { useSWRConfig } from "swr";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -20,12 +21,15 @@ import postAnswer from "../../../services/postAnswer.service";
 import upvoteQuestionService from "../../../services/upvoteQuestion.service";
 import { getUser } from "../../../utils/authUtils";
 import getDayFromNow from "../../../utils/getDateFromNow";
+import API_URL from "../../../utils/constants/apiURL";
 
 export default function QuestionDetail() {
   const router = useRouter();
   const query = router.query;
   const { id } = query;
+  const { mutate } = useSWRConfig();
   const { question, user } = useQuestion(id ? String(id) : null);
+  const [isOwner, setIsOwner] = useState(false);
   const { votes } = useGetQuestionVotes(id ? String(id) : null);
   const [userInfo, setUserInfo] = useState(null);
   const { answers } = useAnswerByQuestion(id ? String(id) : null);
@@ -34,8 +38,11 @@ export default function QuestionDetail() {
     let currentUser = getUser();
     if (currentUser) {
       setUserInfo(currentUser);
+      if (currentUser.id === question?.user_id) {
+        setIsOwner(true);
+      }
     }
-  }, []);
+  }, [question]);
   const handleUpvote = async () => {
     try {
       if (!userInfo) {
@@ -46,13 +53,13 @@ export default function QuestionDetail() {
           .length > 0
       ) {
         await deleteVoteQuestion(id);
+        mutate(`${API_URL}/questions/${id}/votes`);
         return;
       }
       await upvoteQuestionService(id);
-      alert("Upvote success");
+      mutate(`${API_URL}/questions/${id}/votes`);
     } catch (error) {
       console.log(error);
-      alert("Upvote failed");
     }
   };
 
@@ -66,14 +73,14 @@ export default function QuestionDetail() {
           .length > 0
       ) {
         await deleteVoteQuestion(id);
+        mutate(`${API_URL}/questions/${id}/votes`);
         return;
       }
 
       await downvoteQuestionService(id);
-      alert("Downvote success");
+      mutate(`${API_URL}/questions/${id}/votes`);
     } catch (error) {
       console.log(error);
-      alert("Downvote failed");
     }
   };
 
@@ -95,6 +102,15 @@ export default function QuestionDetail() {
     <div>
       <Head>
         <title>{question?.title}</title>
+        <meta name="description" content={question?.title} />
+        <meta name="keywords" content={question?.title} />
+        <meta property="og:title" content={question?.title} />
+        <meta property="og:description" content={question?.title} />
+        <meta property="og:image" content={question?.image} />
+        <meta
+          property="og:url"
+          content={`${window.location.origin}/questions/${id}`}
+        />
       </Head>
       <div className="container">
         <p className="flex gap-2 items-center h-10">
@@ -189,8 +205,8 @@ export default function QuestionDetail() {
                   )}
                   <div>
                     <ActionList
-                      edit
-                      _delete
+                      edit={isOwner}
+                      _delete={isOwner}
                       share
                       id={question?.ID}
                       object="question"

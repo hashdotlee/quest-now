@@ -6,8 +6,11 @@ import upvoteQuestionService from "../services/upvoteQuestion.service";
 import downvoteQuestionService from "../services/downvoteQuestion.service";
 import { getUser } from "../utils/authUtils";
 import deleteVoteQuestion from "../services/deleteVoteQuestion.service";
+import { useSWRConfig } from "swr";
+import API_URL from "../utils/constants/apiURL";
 
 export default function ItemQuest({ question, index }) {
+  const { mutate } = useSWRConfig();
   const [userInfo, setUserInfo] = useState(null);
   useEffect(() => {
     let currentUser = getUser();
@@ -21,17 +24,18 @@ export default function ItemQuest({ question, index }) {
         alert("You must login to downvote");
         return;
       } else if (
-        question?.vote?.filter((item) => item.user_id === userInfo.id && item.type === 1)
-          .length > 0
+        question?.vote?.filter(
+          (item) => item.user_id === userInfo.id && item.type === 1
+        ).length > 0
       ) {
         await deleteVoteQuestion(question?.ID);
+        mutate(`${API_URL}/questions`);
         return;
       }
       await upvoteQuestionService(question?.ID);
-      alert("Upvote success");
+      mutate(`${API_URL}/questions`);
     } catch (error) {
       console.log(error);
-      alert("Upvote failed");
     }
   };
 
@@ -41,17 +45,18 @@ export default function ItemQuest({ question, index }) {
         alert("You must login to downvote");
         return;
       } else if (
-        question?.vote?.filter((item) => item.user_id === userInfo.id && item.type === 2)
-          .length > 0
+        question?.vote?.filter(
+          (item) => item.user_id === userInfo.id && item.type === 2
+        ).length > 0
       ) {
         await deleteVoteQuestion(question?.ID);
+        mutate(`${API_URL}/questions`);
         return;
       }
       await downvoteQuestionService(question?.ID);
-      alert("Downvote success");
+      mutate(`${API_URL}/questions`);
     } catch (error) {
       console.log(error);
-      alert("Downvote failed");
     }
   };
   return (

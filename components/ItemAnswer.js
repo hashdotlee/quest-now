@@ -1,21 +1,28 @@
 import { ArrowSmDownIcon, ArrowSmUpIcon } from "@heroicons/react/solid";
 import { useEffect, useState } from "react";
+import { useSWRConfig } from "swr";
 import useGetAnswerVotes from "../hooks/useGetAnswerVotes";
 import deleteVoteAnswer from "../services/deleteVoteAnswer.service";
 import downvoteAnswerService from "../services/downvoteAnswer.service";
 import upvoteAnswerService from "../services/upvoteAnswer.service";
 import { getUser } from "../utils/authUtils";
+import API_URL from "../utils/constants/apiURL";
 import getDayFromNow from "../utils/getDateFromNow";
 import ActionList from "./ActionList";
 
 export default function ItemAnswer({ answer }) {
+  const [isOwner, setIsOwner] = useState(false);
+  const { mutate } = useSWRConfig();
   const [userInfo, setUserInfo] = useState(null);
   useEffect(() => {
     let currentUser = getUser();
     if (currentUser) {
       setUserInfo(currentUser);
+      if (currentUser.id === answer?.user_id) {
+        setIsOwner(true);
+      }
     }
-  }, []);
+  }, [answer]);
   const { votes = [] } = useGetAnswerVotes(answer.ID);
 
   const handleUpvote = async () => {
@@ -28,13 +35,15 @@ export default function ItemAnswer({ answer }) {
           .length > 0
       ) {
         await deleteVoteAnswer(answer.ID);
+        mutate(`${API_URL}/answers/${answer.ID}/votes`);
+        mutate(`${API_URL}/questions/${answer.question_id}/answers`);
         return;
       }
       await upvoteAnswerService(answer.ID);
-      alert("Upvote success");
+      mutate(`${API_URL}/answers/${answer.ID}/votes`);
+      mutate(`${API_URL}/questions/${answer.question_id}/answers`);
     } catch (error) {
       console.log(error);
-      alert("Upvote failed");
     }
   };
 
@@ -48,13 +57,15 @@ export default function ItemAnswer({ answer }) {
           .length > 0
       ) {
         await deleteVoteAnswer(answer.ID);
+        mutate(`${API_URL}/answers/${answer.ID}/votes`);
+        mutate(`${API_URL}/questions/${answer.question_id}/answers`);
         return;
       }
       await downvoteAnswerService(answer.ID);
-      alert("Downvote success");
+      mutate(`${API_URL}/answers/${answer.ID}/votes`);
+      mutate(`${API_URL}/questions/${answer.question_id}/answers`);
     } catch (error) {
       console.log(error);
-      alert("Downvote failed");
     }
   };
   return (
@@ -99,7 +110,12 @@ export default function ItemAnswer({ answer }) {
         <div> {answer?.content} </div>
         <div className="flex gap-3">
           <div>
-            <ActionList object="answer" id={answer?.ID} edit _delete share />
+            <ActionList
+              object="answer"
+              id={answer?.ID}
+              edit={isOwner}
+              _delete={isOwner}
+            />
           </div>
           <div className="ml-auto text-xs flex gap-2">
             <span className="text-neutral-500">Answer:</span>
