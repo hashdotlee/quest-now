@@ -6,6 +6,7 @@ import deleteAnswerService from "../services/deleteAnswer.service";
 import deleteQuestionService from "../services/deleteQuestion.service";
 import updateAnswerService from "../services/updateAnswer.service";
 import updateQuestionService from "../services/updateQuestion.service";
+import URL from "../utils/constants/URL";
 import MyModal from "./MyModal";
 
 export default function ActionList({
@@ -101,7 +102,7 @@ export default function ActionList({
         {_delete && <button onClick={() => handleDelete()}>Delete</button>}
         {share && (
           <FacebookShareButton
-            url={router.asPath}
+            url={`${URL}${router.asPath}`}
             quote={"Check out this question!"}
             hashtag="#QuestNow"
           >

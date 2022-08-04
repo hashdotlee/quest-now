@@ -22,6 +22,7 @@ import upvoteQuestionService from "../../../services/upvoteQuestion.service";
 import { getUser } from "../../../utils/authUtils";
 import getDayFromNow from "../../../utils/getDateFromNow";
 import API_URL from "../../../utils/constants/apiURL";
+import URL from "../../../utils/constants/URL";
 
 export default function QuestionDetail() {
   const router = useRouter();
@@ -109,7 +110,7 @@ export default function QuestionDetail() {
         <meta property="og:image" content={question?.image} />
         <meta
           property="og:url"
-          content={`${router.asPath}`}
+          content={`${URL}${router.asPath}`}
         />
       </Head>
       <div className="container">
