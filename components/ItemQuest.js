@@ -66,9 +66,10 @@ export default function ItemQuest({ question, index }) {
       </div>
       <div className="flex items-center gap-1">
         <div className="flex flex-col justify-between">
-          <button
+          <div
+            role="button"
             onClick={handleUpvote}
-            className={`${
+            className={`cursor-pointer ${
               userInfo &&
               question?.vote?.filter(
                 (item) => item.user_id === userInfo.id && item.type === 1
@@ -78,10 +79,11 @@ export default function ItemQuest({ question, index }) {
             }`}
           >
             <ArrowSmUpIcon className="h-4 w-4" />
-          </button>
-          <button
+          </div>
+          <div
+            role="button"
             onClick={handleDownvote}
-            className={`${
+            className={`cursor-pointer ${
               userInfo &&
               question?.vote?.filter(
                 (item) => item.user_id === userInfo.id && item.type === 2
@@ -91,7 +93,7 @@ export default function ItemQuest({ question, index }) {
             }`}
           >
             <ArrowSmDownIcon className="h-4 w-4" />
-          </button>
+          </div>
         </div>
         <div>
           <Link href={`/questions/${question.ID}/${slug(question.title)}`}>
