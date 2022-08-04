@@ -112,6 +112,7 @@ export default function ItemAnswer({ answer }) {
           <div>
             <ActionList
               object="answer"
+              questionId={answer?.question_id}
               id={answer?.ID}
               edit={isOwner}
               _delete={isOwner}

@@ -2,7 +2,7 @@ import API_URL from "../utils/constants/apiURL";
 import { fetchWrapper } from "../utils/fetchWrapper";
 
 export default function updateQuestionService(id, content) {
-  return fetchWrapper(`${API_URL}/questions/${id}/update`, {
+  return fetchWrapper(`${API_URL}/questions/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

@@ -1,16 +1,20 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { FacebookShareButton, FacebookShareCount } from "react-share";
+import { FacebookShareButton } from "react-share";
 import { useSWRConfig } from "swr";
+import useAnswer from "../hooks/useAnswer";
+import useQuestion from "../hooks/useQuestion";
 import deleteAnswerService from "../services/deleteAnswer.service";
 import deleteQuestionService from "../services/deleteQuestion.service";
 import updateAnswerService from "../services/updateAnswer.service";
 import updateQuestionService from "../services/updateQuestion.service";
+import API_URL from "../utils/constants/apiURL";
 import URL from "../utils/constants/URL";
 import MyModal from "./MyModal";
 
 export default function ActionList({
   id = "", // question id
+  questionId = "", // answer id
   edit, // boolean
   _delete, // boolean
   share, // boolean
@@ -19,11 +23,15 @@ export default function ActionList({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const { question } = useQuestion(object === "question" ? id : null);
+  const { answer } = useAnswer(object === "answer" ? id : null);
+  const { mutate } = useSWRConfig();
+
   const onSubmit = (content) => {
     if (object === "answer") {
       updateAnswerService(id, content)
         .then(() => {
-          alert("Answer updated!");
+          mutate(`${API_URL}/questions/${questionId}/answers`);
         })
         .catch(() => {
           alert("Error updating answer!");
@@ -31,7 +39,7 @@ export default function ActionList({
     } else {
       updateQuestionService(id, content)
         .then((res) => {
-          console.log(res);
+          mutate(`${API_URL}/questions/${id}`);
         })
         .catch((err) => {
           console.log(err);
@@ -39,7 +47,6 @@ export default function ActionList({
     }
   };
 
-  const { mutate } = useSWRConfig();
   const handleVerify = () => {
     if (object === "answer") {
       postAnswerVerify(object.ID)
@@ -51,25 +58,6 @@ export default function ActionList({
         });
     }
   };
-  const handleShare = () => {
-    if (object === "answer") {
-      postAnswerShare(object.ID)
-        .then(() => {
-          alert("Answer shared!");
-        })
-        .catch(() => {
-          alert("Error sharing answer!");
-        });
-    } else if (object === "question") {
-      postQuestionShare(object.ID)
-        .then(() => {
-          alert("Question shared!");
-        })
-        .catch(() => {
-          alert("Error sharing question!");
-        });
-    }
-  };
   const handleEdit = () => {
     setIsOpen(true);
   };
@@ -78,7 +66,7 @@ export default function ActionList({
       if (confirm("Are you sure you want to delete this answer?")) {
         deleteAnswerService(id)
           .then(() => {
-            alert("Answer deleted!");
+            mutate(`${API_URL}/questions/${questionId}/answers`);
           })
           .catch(() => {
             alert("Error deleting answer!");
@@ -87,7 +75,7 @@ export default function ActionList({
     } else if (object === "question") {
       deleteQuestionService(id)
         .then(() => {
-          alert("Question deleted!");
+          router.push(`/`);
         })
         .catch(() => {
           alert("Error deleting question!");
@@ -107,11 +95,7 @@ export default function ActionList({
             hashtag="#QuestNow"
           >
             {" "}
-            Share on Facebook (
-            <FacebookShareCount url={`${URL}${router.asPath}`}>
-              {(count) => <span>{count}</span>}
-            </FacebookShareCount>
-            )
+            Share on Facebook
           </FacebookShareButton>
         )}
       </div>
@@ -119,6 +103,7 @@ export default function ActionList({
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         title="Edit"
+        content={object === "answer" ? answer?.content : question?.content}
         onSubmit={(content) => onSubmit(content)}
         onCancel={() => setIsOpen(false)}
       />

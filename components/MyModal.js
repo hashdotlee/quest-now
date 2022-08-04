@@ -1,15 +1,19 @@
-import {Dialog, Transition} from "@headlessui/react";
-import {Fragment, useState} from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { Fragment, useEffect, useState } from "react";
 
 export default function MyModal({
   children,
   isOpen,
   onClose,
   title,
+  content: contentProp,
   onSubmit,
   onCancel,
 }) {
   const [content, setContent] = useState("");
+  useEffect(() => {
+    setContent(contentProp);
+  }, [contentProp]);
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>

@@ -108,10 +108,7 @@ export default function QuestionDetail() {
         <meta property="og:title" content={question?.title} />
         <meta property="og:description" content={question?.title} />
         <meta property="og:image" content={question?.image} />
-        <meta
-          property="og:url"
-          content={`${URL}${router.asPath}`}
-        />
+        <meta property="og:url" content={`${URL}${router.asPath}`} />
       </Head>
       <div className="container">
         <p className="flex gap-2 items-center h-10">
