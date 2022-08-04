@@ -109,7 +109,7 @@ export default function QuestionDetail() {
         <meta property="og:image" content={question?.image} />
         <meta
           property="og:url"
-          content={`${window.location.origin}/questions/${id}`}
+          content={`${router.asPath}`}
         />
       </Head>
       <div className="container">
