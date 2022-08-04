@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { FacebookShareButton } from "react-share";
+import { FacebookShareButton, FacebookShareCount } from "react-share";
 import { useSWRConfig } from "swr";
 import deleteAnswerService from "../services/deleteAnswer.service";
 import deleteQuestionService from "../services/deleteQuestion.service";
@@ -107,7 +107,11 @@ export default function ActionList({
             hashtag="#QuestNow"
           >
             {" "}
-            Share on Facebook
+            Share on Facebook (
+            <FacebookShareCount url={`${URL}${router.asPath}`}>
+              {(count) => <span>{count}</span>}
+            </FacebookShareCount>
+            )
           </FacebookShareButton>
         )}
       </div>
