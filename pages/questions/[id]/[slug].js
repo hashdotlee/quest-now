@@ -194,7 +194,7 @@ export default function QuestionDetail() {
                   )}
                   {question?.topic && (
                     <div>
-                      {question?.topic.map((topic) => (
+                      {question?.topics.map((topic) => (
                         <div key={topic.ID}>
                           <p>{topic.title}</p>
                         </div>

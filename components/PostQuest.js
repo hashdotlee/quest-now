@@ -7,16 +7,15 @@ import postQuest from "../services/postQuest.service";
 export default function PostQuest() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [image, setImage] = useState("");
   const [type, setType] = useState(0);
-  const [topic, setTopic] = useState("");
+  const [topic, setTopic] = useState([]);
   const [gifSearch, setGifSearch] = useState("happy");
   const [searchInput, setSearchInput] = useState("");
   const { gif, isLoading: isLoaddingGif } = useGIF(gifSearch);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    postQuest(title, content, gif, Number(type), topic)
+    postQuest(title, content, gif, Number(type), topic.join(","))
       .then(() => {
         alert("Quest posted successfully");
       })
@@ -59,11 +58,22 @@ export default function PostQuest() {
               />
             </div>
             <div className="my-2">
-              <select onChange={(e) => setTopic(e.target.value)} value={topic}>
+              <select
+                multiple
+                name="topic"
+                onChange={(e) => {
+                  let value = Array.from(
+                    e.target.selectedOptions,
+                    (option) => option.value
+                  );
+                  setTopic([...value]);
+                }}
+                value={topic}
+              >
                 <option value="">Select a topic</option>
                 {topics.map((topic) => (
-                  <option key={topic.id} value={topic.ID}>
-                    {topic.name}
+                  <option key={topic.ID} value={topic.title}>
+                    {topic.title}
                   </option>
                 ))}
               </select>
