@@ -192,10 +192,10 @@ export default function QuestionDetail() {
                       />
                     </div>
                   )}
-                  {question?.topic && (
-                    <div>
+                  {question?.topics && (
+                    <div className="flex gap-2 ">
                       {question?.topics.map((topic) => (
-                        <div key={topic.ID}>
+                        <div key={topic.ID} className="p-1 bg-orange-100 text-sm">
                           <p>{topic.title}</p>
                         </div>
                       ))}
